@@ -14,6 +14,10 @@ namespace AdsProject.DataAccessLogic
         public DbSet<Ad> Ad { get; set; }
         public DbSet<AdImage> AdImage { get; set; }
 
+        public DbSet<Role> Role { get; set; }
+        public DbSet<User> User { get; set; }
+
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer(@"Data Source = JC-PC; Initial Catalog = AdsProject; Integrated Security = True;
