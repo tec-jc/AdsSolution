@@ -1,9 +1,12 @@
 ﻿using AdsProject.BussinessEntities;
 using AdsProject.BussinessLogic;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AdsProject.GraphicUserInterface.Controllers
 {
+    [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
     public class RoleController : Controller
     {
         RoleBL roleBL = new RoleBL();
