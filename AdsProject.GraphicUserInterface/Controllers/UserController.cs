@@ -149,14 +149,9 @@ namespace AdsProject.GraphicUserInterface.Controllers
                 if (userDb != null && userDb.Id > 0 && userDb.Login == user.Login)
                 {
                     userDb.Role = await roleBL.GetByIdAsync(new Role { Id = userDb.Id });
-
-                    var claims = new[] {new Claim(ClaimTypes.Name, userDb.Login),
-                                new Claim(ClaimTypes.Role, userDb.Role.Name)};
-
+                    var claims = new[] {new Claim(ClaimTypes.Name, userDb.Login), new Claim(ClaimTypes.Role, userDb.Role.Name)};
                     var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-
-                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
-                                new ClaimsPrincipal(identity));
+                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity));
                 }
                 else
                     throw new Exception("Hay un problema con sus credenciales");
@@ -208,10 +203,6 @@ namespace AdsProject.GraphicUserInterface.Controllers
                 var actualUser = users.FirstOrDefault();
                 return View(actualUser);
             }
-            
-
         }
-
-
     }
 }
