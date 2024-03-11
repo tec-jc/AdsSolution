@@ -10,13 +10,14 @@ using System.Security.Claims;
 
 namespace AdsProject.GraphicUserInterface.Controllers
 {
-    [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
+    [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme, Roles = "Administrador, Supervisor, Usuario")]
     public class UserController : Controller
     {
         UserBL userBL = new UserBL();
         RoleBL roleBL = new RoleBL();
 
         // acción que muestra la lista de usuarios registrados
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Index(User user = null)
         {
             if (user == null)
@@ -36,6 +37,7 @@ namespace AdsProject.GraphicUserInterface.Controllers
         }
 
         // acción que muestra el detalle de un registro
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Details(int id)
         {
             var user = await userBL.GetByIdAsync(new User { Id = id });
@@ -44,6 +46,7 @@ namespace AdsProject.GraphicUserInterface.Controllers
         }
 
         // acción que muestra el formulario para un registro nuevo
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Create()
         {
             var roles = await roleBL.GetAllAsync();
@@ -52,6 +55,7 @@ namespace AdsProject.GraphicUserInterface.Controllers
         }
 
         // acción que recibe los datos y los envía a la bd mediante el modelo
+        [Authorize(Roles = "Administrador")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(User user)
@@ -70,6 +74,7 @@ namespace AdsProject.GraphicUserInterface.Controllers
         }
 
         // acción que muestra el formulario con los datos cargados para modificar
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Edit(int id)
         {
             var user = await userBL.GetByIdAsync(new User{ Id = id });
@@ -79,6 +84,7 @@ namespace AdsProject.GraphicUserInterface.Controllers
         }
 
         // acción que recibe los datos modificados y los envía a la bd
+        [Authorize(Roles = "Administrador")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, User user)
@@ -97,6 +103,7 @@ namespace AdsProject.GraphicUserInterface.Controllers
         }
 
         // acción que muestra los datos para confirmar la eliminación
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Delete(int id)
         {
             var user = await userBL.GetByIdAsync(new User { Id = id });
@@ -106,6 +113,7 @@ namespace AdsProject.GraphicUserInterface.Controllers
         }
 
         // acción que recibe la confirmación para eliminar
+        [Authorize(Roles = "Administrador")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id, User user)
@@ -148,7 +156,7 @@ namespace AdsProject.GraphicUserInterface.Controllers
                 var userDb = await userBL.LoginAsync(user);
                 if (userDb != null && userDb.Id > 0 && userDb.Login == user.Login)
                 {
-                    userDb.Role = await roleBL.GetByIdAsync(new Role { Id = userDb.Id });
+                    userDb.Role = await roleBL.GetByIdAsync(new Role { Id = userDb.IdRole });
                     var claims = new[] {new Claim(ClaimTypes.Name, userDb.Login), new Claim(ClaimTypes.Role, userDb.Role.Name)};
                     var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity));
